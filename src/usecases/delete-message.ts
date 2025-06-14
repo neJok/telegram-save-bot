@@ -17,6 +17,6 @@ deleteMessageHandler.on("deleted_business_messages", async (ctx) => {
   <strong>${deletedMessage.from}</strong> deleted message:
   <blockquote expandable>${deletedMessage.text}</blockquote>
   `;
-    await ctx.api.sendMessage(employee.id, message);
+    await ctx.api.sendMessage(employee.id, message, {parse_mode: "HTML"});
   }
 });
