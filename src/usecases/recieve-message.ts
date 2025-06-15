@@ -29,7 +29,7 @@ businessMessageHandler.on("business_message", async (ctx) => {
   }
 
   const reply = ctx.msg.reply_to_message;
-  if (!reply) {
+  if (!reply || !reply.has_protected_content) {
     return;
   }
 
