@@ -37,7 +37,9 @@ businessMessageHandler.on("business_message", async (ctx) => {
 
   const photo = reply.photo?.at(-1)?.file_id;
   if (photo) {
-    ctx.api.sendPhoto(ctx.msg.from.id, photo, {
+    const file = await ctx.api.getFile(photo);
+    const tempPath = await file.download();
+    ctx.api.sendPhoto(ctx.msg.from.id, new InputFile(tempPath), {
       caption: `Фото от <strong>${fromReply}</strong>`,
       parse_mode: "HTML",
     });
