@@ -1,5 +1,6 @@
 import {Composer, Context, InputFile} from "grammy";
 import type {MyContext, SavedMessage} from "..";
+import {Api} from "../../out";
 
 export const businessMessageHandler = new Composer<MyContext>();
 
@@ -13,7 +14,11 @@ businessMessageHandler.on("business_message", async (ctx) => {
   const savedMessage: SavedMessage = {
     id: ctx.msgId,
     from: ctx.msg.from.username ?? String(ctx.msg.from.id),
-    text: ctx.msg.text ?? "Not a text",
+    text: ctx.msg.text,
+    voice: ctx.msg.voice?.file_id,
+    video_note: ctx.msg.video_note?.file_id,
+    video: ctx.msg.video?.file_id,
+    photo: ctx.msg.photo?.at(-1)?.file_id,
   };
   ctx.session.history.push(savedMessage);
 
@@ -29,8 +34,39 @@ businessMessageHandler.on("business_message", async (ctx) => {
     return;
   }
 
-  const fileUrl = reply.photo?.at(-1)?.file_id;
-  if (fileUrl) {
-    sendFileTo(ctx.msg.from.id, fileUrl, ctx);
+  const fromReply = reply.from?.username ?? String(reply.from?.id);
+
+  const photo = reply.photo?.at(-1)?.file_id;
+  if (photo) {
+    ctx.api.sendPhoto(ctx.msg.from.id, photo, {
+      caption: `Фото от <strong>${fromReply}</strong>`,
+      parse_mode: "HTML",
+    });
+  }
+
+  const video = reply.video?.file_id;
+  if (video) {
+    ctx.api.sendVideo(ctx.msg.from.id, video, {
+      caption: `Видео от <strong>${fromReply}</strong>`,
+      parse_mode: "HTML",
+    });
+  }
+
+  const voice = reply.voice?.file_id;
+  if (voice) {
+    ctx.api.sendVoice(ctx.msg.from.id, voice, {
+      caption: `Аудио от <strong>${fromReply}</strong>`,
+      parse_mode: "HTML",
+    });
+  }
+
+  const video_note = reply.video_note?.file_id;
+  if (video_note) {
+    const file = await ctx.api.getFile(video_note);
+    const tempPath = await file.download();
+    ctx.api.sendVideo(ctx.msg.from.id, new InputFile(tempPath), {
+      caption: `Кружочек от <strong>${fromReply}</strong>`,
+      parse_mode: "HTML",
+    });
   }
 });

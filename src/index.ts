@@ -6,11 +6,15 @@ import {editMessageHandler} from "./usecases/edit-message";
 import {deleteMessageHandler} from "./usecases/delete-message";
 import {businessMessageHandler} from "./usecases/recieve-message";
 
-export interface SavedMessage {
+export type SavedMessage = {
   id: number;
   from: string;
-  text: string;
-}
+  text: string | undefined;
+  voice: string | undefined;
+  video_note: string | undefined;
+  video: string | undefined;
+  photo: string | undefined;
+};
 
 interface SessionData {
   history: SavedMessage[];
