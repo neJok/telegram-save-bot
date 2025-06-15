@@ -5,6 +5,7 @@ import {ignoreOld} from "grammy-middlewares";
 import {editMessageHandler} from "./usecases/edit-message";
 import {deleteMessageHandler} from "./usecases/delete-message";
 import {businessMessageHandler} from "./usecases/recieve-message";
+import {startHandler} from "./usecases/start";
 
 export type SavedMessage = {
   id: number;
@@ -32,6 +33,7 @@ bot.api.config.use(hydrateFiles(bot.token));
 bot.use(ignoreOld());
 bot.use(session({initial}));
 
+bot.use(startHandler);
 bot.use(editMessageHandler);
 bot.use(deleteMessageHandler);
 bot.use(businessMessageHandler);
