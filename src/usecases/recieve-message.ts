@@ -1,6 +1,5 @@
 import {Composer, Context, InputFile} from "grammy";
 import type {MyContext, SavedMessage} from "..";
-import {Api} from "../../out";
 
 export const businessMessageHandler = new Composer<MyContext>();
 

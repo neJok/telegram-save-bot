@@ -3,7 +3,7 @@
 	"module": "index.ts",
 	"type": "module",
 	"scripts": {
-		"build": "bun build ./src/index.ts --outdir ./out",
+		"build": "bun build ./src/index.ts --outdir ./out --target=bun",
 		"start": "bun run src/index"
 	},
 	"private": true,

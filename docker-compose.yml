@@ -1,0 +1,13 @@
+services:
+  tgbot:
+    platform: linux/amd64
+    container_name: tg-save-bot
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - TELEGRAM_API_KEY=${TELEGRAM_API_KEY}

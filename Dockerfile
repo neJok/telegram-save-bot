@@ -26,3 +26,4 @@ COPY --from=prerelease /usr/src/package.json .
 
 # run the app
 USER bun
+ENTRYPOINT [ "bun", "run", "index.js" ]
