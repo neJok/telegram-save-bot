@@ -11,6 +11,8 @@ services:
       - TELEGRAM_API_KEY=${TELEGRAM_API_KEY}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    depends_on:
+      - redis
 
   redis:
     image: redis:7-alpine
