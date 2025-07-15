@@ -13,9 +13,6 @@ RUN bun install
 # Copy all source code
 COPY . .
 
-# Expose the bot's default port (if applicable)
-EXPOSE 3000
-
 # Set environment variables (optional)
 ENV NODE_ENV=production
 
