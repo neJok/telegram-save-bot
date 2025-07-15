@@ -1,5 +1,6 @@
 import { Composer } from "grammy";
 import type { MyContext } from "..";
+import { redis } from "../lib/redis";
 
 export const deleteMessageHandler = new Composer<MyContext>();
 
@@ -64,12 +65,14 @@ const mediaHandlers: Record<
 
 deleteMessageHandler.on("deleted_business_messages", async (ctx) => {
   const deletedMessageIds = ctx.update.deleted_business_messages.message_ids;
-  const deletedMessages = ctx.session.history.filter((msg) => deletedMessageIds.includes(msg.id));
-
   const conn = await ctx.getBusinessConnection();
   const employee = conn.user;
 
-  for (const deletedMessage of deletedMessages) {
+  for (const id of deletedMessageIds) {
+    const raw = await redis.get(`message:${id}`);
+    if (!raw) continue
+    
+    const deletedMessage = JSON.parse(raw);
     if (employee.id === deletedMessage.from_id) continue;
 
     for (const [type, handler] of Object.entries(mediaHandlers)) {

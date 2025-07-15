@@ -9,3 +9,10 @@ services:
     environment:
       - NODE_ENV=production
       - TELEGRAM_API_KEY=${TELEGRAM_API_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: redis:7-alpine
+    container_name: tg-save-redis
+    restart: unless-stopped

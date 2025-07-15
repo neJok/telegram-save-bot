@@ -1,11 +1,12 @@
 import { Composer, InputFile } from "grammy";
-import type { MyContext } from "..";
+import type { MyContext, SavedMessage } from "..";
+import { redis } from "../lib/redis";
 
 export const editMessageHandler = new Composer<MyContext>();
 
 const mediaSenders: Record<
   string,
-  (ctx: MyContext, employeeId: number, file: InputFile) => Promise<void>
+  (ctx: MyContext, employeeId: number, file: InputFile) => Promise<any>
 > = {
   photo: (ctx, id, file) => ctx.api.sendPhoto(id, file),
   video: (ctx, id, file) => ctx.api.sendVideo(id, file),
@@ -35,7 +36,9 @@ async function downloadAndSend(
 
 editMessageHandler.on("edited_business_message", async (ctx) => {
   const editedMessage = ctx.update.edited_business_message;
-  const oldMsg = ctx.session.history.find((msg) => msg.id === editedMessage.message_id);
+  const raw = await redis.get(`message:${editedMessage.message_id}`);
+  if (!raw) return;
+  const oldMsg: SavedMessage = JSON.parse(raw);
 
   const conn = await ctx.getBusinessConnection();
   const employee = conn.user;

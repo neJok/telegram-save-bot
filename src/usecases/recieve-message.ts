@@ -1,5 +1,6 @@
-import { Composer, Context, InputFile } from "grammy";
+import { Composer, InputFile } from "grammy";
 import type { MyContext, SavedMessage } from "..";
+import { redis } from "../lib/redis"; 
 
 export const businessMessageHandler = new Composer<MyContext>();
 
@@ -42,8 +43,7 @@ businessMessageHandler.on("business_message", async (ctx) => {
     } : undefined,
     sticker_emoji: msg.sticker?.emoji,
   };
-
-  ctx.session.history.push(savedMessage);
+  await redis.setex(`message:${ctx.msgId}`, 60 * 60 * 24 * 3, JSON.stringify(savedMessage));
 
   const conn = await ctx.getBusinessConnection();
   const employee = conn.user;
