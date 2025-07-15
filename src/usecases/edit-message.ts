@@ -92,10 +92,7 @@ editMessageHandler.on("edited_business_message", async (ctx) => {
   }
 
   if (oldMsg.text || editedMessage.text) {
-    const message = `
-<strong>${editedMessage.from.username}</strong> изменил сообщение:
-${oldMsg.text ? `<blockquote expandable>${oldMsg.text}</blockquote>` : ""}
-Обновленный текст: <blockquote expandable>${editedMessage.text}</blockquote>
+    const message = `<strong>${editedMessage.from.username}</strong> изменил сообщение:\n${oldMsg.text ? `<blockquote expandable>${oldMsg.text}</blockquote>` : ""}\n\nОбновленный текст:\n<blockquote expandable>${editedMessage.text}</blockquote>
     `;
     await ctx.api.sendMessage(employee.id, message.trim(), { parse_mode: "HTML" });
   }
